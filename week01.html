@@ -1,0 +1,246 @@
+<html lang="en">
+    <head>
+        <!-- Required meta tags  -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+              integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+              crossorigin="anonymous">
+        <!-- Optional JavaScript -->
+        <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+                integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+                crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+                integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+                crossorigin="anonymous"></script>
+
+
+        <title>[매진임박] 맛있는 고구마 판매!</title>
+        <style type="text/css">
+            .img {
+                background-image: url('https://ww.namu.la/s/6e6c402503dc2fdf2e39dea8a2ae23cf68c0fcd7dd390126cf50b3bb15e716d0b8e6321f4e75eac84037a575967e19bc02d0d2c748f70faac1efcde27918d36996b5bd78ed233ff429c2b05da4cf8d3e51da7af14155445441abe08a46bfd077ef9588a324fff553315f2a7a67591ac6');
+                background-size: cover;
+                background-position: center;
+                width: 500px;
+                height: 300px;
+            }
+
+            .wrap {
+                width: 550px;
+                margin: auto;
+            }
+
+            .intro {
+                margin-top: 50px;
+                margin-bottom: 50px;
+            }
+
+            .order {
+                margin-top: 50px;
+                margin-bottom: 50px;
+
+            }
+
+            .intro > * {
+                margin: 5px 5px 5px
+            }
+
+            .order > * {
+                margin: 5px 5px 5px
+            }
+
+            .name > * {
+                display: inline;
+            }
+
+            .rate_info {
+                color: blue;
+            }
+        </style>
+
+
+        <script>
+            var price = 10000;
+            var sell_price;
+            var amount = 0;
+            var rate = 1;
+
+
+            function init() {
+                //document.form.span_price.value = price;
+            }
+
+
+            function order() {
+                if (user_name.value == ""){
+                    alert("성함을 입력해주세요");
+                    return;
+                }
+                 if (select_amount.value == "0"){
+                    alert("수량을 입력해주세요");
+                    return;
+                }
+                 if (user_addr.value == ""){
+                    alert("주소를 입력해주세요");
+                    return;
+                }
+                 if (user_hp.value == ""){
+                    alert("전화번호를 입력해주세요");
+                    return;
+                }
+
+                alert("주문되었습니다");
+            }
+
+            function show_total_price() {
+                alert("주문되었습니다");
+            }
+
+            function SetLanguageSelectBox() {
+
+                showExchange();
+
+                SetAmountSelectBox();
+            }
+
+            function showExchange() {
+
+                $.ajax({
+                    type: "GET",
+                    url: "https://api.manana.kr/exchange/rate.json",
+                    data: {},
+                    async: false,
+                    success: function (response) {
+
+                        let rows = response;
+
+                        let selected_language = $("#select_language option:selected").val();
+
+                        for (let i = 0; i < rows.length; i++) {
+                            let rate_name = rows[i]['name'];
+
+                            if (selected_language == 'Kor' && rate_name == 'KRW=X') {
+                                rate = rows[i]['rate'];
+                                tempHtml = `원-원 환율 : ${rate}`
+                                $('#span_rate').text(tempHtml);
+                                $('#span_exchange').text('원');
+
+
+                            } else if (selected_language == 'Eng' && rate_name == 'USDKRW=X') {
+                                rate = rows[i]['rate'];
+                                tempHtml = `달러-원 환율 : ${rate}`
+                                $('#span_rate').text(tempHtml);
+                                $('#span_exchange').text('$');
+
+                            } else if (selected_language == 'Jap' && rate_name == 'JPYKRW=X') {
+                                rate = rows[i]['rate'];
+                                tempHtml = `엔화-원 환율 : ${rate}`
+                                $('#span_rate').text(tempHtml);
+                                $('#span_exchange').text('¥');z
+
+                            }
+                        }
+                    }
+                })
+            }
+
+            function SetAmountSelectBox() {
+                sum_box = document.form.sum_box;
+                amount = $("#select_amount option:selected").val(); // title, board_title, reg_id
+                //     document.form.sum.value = parseInt(schField * per_price)
+
+          //      alert(amount + "-" + price + "-" + rate);
+                sum_box.value = Math.ceil(amount * price / rate);
+
+                //   alert(schField * per_price);
+            }
+
+
+            $(document).ready(function () {
+                $('#span_price').html(price);
+                SetLanguageSelectBox();
+
+            })
+
+
+        </script>
+    </head>
+    <body onload="init();">
+        <div class="wrap">
+            <form name="form">
+                <div class="img"></div>
+                <div class="intro">
+                    <div class="name"><h1>맛있는 고구마</h1>
+                        <p>가격 : <span id='span_price'></span>
+
+                            원 / 1 박스 </p>
+
+                    </div>
+
+                    <div class="info"> 둘이 먹다 둘이 죽어도 아무도 모르는 꿀맛 고구마! 지금 바로 주문하세요</div>
+                </div>
+
+                <div class="order">
+                    <h1>주문하기</h1>
+                    <div class="rate_info"><span id='span_rate'></span></div>
+                    <div class="p_country row ">
+                        <label for="select_language" class="col-sm col-form-label"> 언어(language)</label>
+                        <div class="col-sm">
+                            <select class="custom-select" id="select_language" onchange="SetLanguageSelectBox()">
+                                <option value="Kor" selected>Korea</option>
+                                <option value="Eng">English</option>
+                                <option value="Jap">Japan</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="p_name row ">
+                        <label for="user_name" class="col-sm col-form-label"> 주문자 성함</label>
+
+                        <div class="col-sm">
+                            <input type="text" class="form-control" id="user_name" placeholder="성함">
+                        </div>
+                    </div>
+                    <div class="p_amount row ">
+                        <label for="select_amount" class="col-sm col-form-label"> 수량</label>
+
+                        <div class="col-sm">
+                            <select class="custom-select" id="select_amount" onchange="SetAmountSelectBox()">
+                                <option value="0" selected>수량선택</option>
+                                <option value="1">1 박스</option>
+                                <option value="2">2 박스</option>
+                                <option value="3">3 박스</option>
+                                <option value="999999">4박스 이상은 전화주세요(02-999-9999)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="p_addr row ">
+                        <label for="user_addr" class="col-sm col-form-label"> 주소</label>
+
+                        <div class="col-sm">
+                            <input type="text" class="form-control" id="user_addr" placeholder="주소">
+                        </div>
+                    </div>
+                    <div class="p_hp row ">
+                        <label for="user_hp" class="col-sm col-form-label"> 전화번호</label>
+
+                        <div class="col-sm">
+                            <input type="text" class="form-control" id="user_hp" placeholder="전화번호">
+                        </div>
+                    </div>
+
+                </div>
+
+                총 금액 : <input type="text" name="sum_box" size="11" readonly> <span id='span_exchange'> </span>
+            </form>
+            <input class="btn btn-primary" type="submit" value="주문하기" onclick="order()">
+
+        </div>
+
+    </body>
+</html>
